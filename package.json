@@ -3,7 +3,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
     "@tailwindcss/postcss": "4.0.0-alpha.13",
@@ -19,7 +20,14 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "sugar-high": "^0.6.0",
-    "tailwindcss": "4.0.0-alpha.13",
+    "tailwindcss": "4.0.0-alpha.13"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.28.0",
+    "@typescript-eslint/parser": "^8.28.0",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^14.2.26",
+    "globals": "^16.0.0",
     "typescript": "5.3.3"
   }
 }
