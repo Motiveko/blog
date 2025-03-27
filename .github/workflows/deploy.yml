@@ -1,0 +1,55 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Build application
+        run: pnpm build
+
+      - name: Install SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ vars.SERVER_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to server
+        run: |
+          # Create necessary directories on server
+          ssh -i ~/.ssh/deploy_key ${{ vars.SERVER_USERNAME }}@${{ vars.SERVER_HOST }} 'mkdir -p /home/motiveko/apps/blog'
+          
+          # Copy build files and package files
+          scp -i ~/.ssh/deploy_key -r .next pnpm-lock.yaml package.json ${{ vars.SERVER_USERNAME }}@${{ vars.SERVER_HOST }}:/home/motiveko/apps/blog/
+          
+          # Copy next.config.js
+          scp -i ~/.ssh/deploy_key next.config.js ${{ vars.SERVER_USERNAME }}@${{ vars.SERVER_HOST }}:/home/motiveko/apps/blog/
+
+      - name: Install dependencies and reload on server
+        run: |
+          ssh -i ~/.ssh/deploy_key ${{ vars.SERVER_USERNAME }}@${{ vars.SERVER_HOST }} 'cd /home/motiveko/apps/blog && pnpm install --frozen-lockfile && pm2 reload blog' 
