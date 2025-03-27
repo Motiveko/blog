@@ -18,7 +18,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: 8
+          version: 10
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -46,9 +46,6 @@ jobs:
           
           # Copy build files and package files
           scp -i ~/.ssh/deploy_key -r .next pnpm-lock.yaml package.json ${{ vars.SERVER_USERNAME }}@${{ vars.SERVER_HOST }}:/home/motiveko/apps/blog/
-          
-          # Copy next.config.js
-          scp -i ~/.ssh/deploy_key next.config.js ${{ vars.SERVER_USERNAME }}@${{ vars.SERVER_HOST }}:/home/motiveko/apps/blog/
 
       - name: Install dependencies and reload on server
         run: |
