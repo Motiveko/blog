@@ -54,7 +54,7 @@ JavaScript에서 모듈은 코드를 재사용 가능한 독립적인 단위로 
   - Node.js에서 오랫동안 표준으로 사용되어 방대한 생태계를 가지고 있습니다.
   - 정적 분석(Static Analysis)이 어렵습니다. (코드 실행 전에는 모듈의 구조나 의존성을 파악하기 힘듦)
 
-```javascript title="cjs-module.js (CJS)"
+```javascript showLineNumbers
 // 모듈 내보내기
 const PI = 3.14;
 
@@ -74,7 +74,7 @@ module.exports = {
 // exports.circleArea = circleArea;
 ```
 
-```javascript title="main.js (CJS)"
+```javascript
 // 모듈 가져오기
 const myModule = require("./cjs-module.js"); // 동기적으로 로드
 
@@ -97,7 +97,7 @@ console.log(myModule.square(5)); // 25
   - **엄격 모드 (Strict Mode):** ESM 모듈은 기본적으로 엄격 모드에서 실행됩니다.
   - JavaScript 공식 표준입니다.
 
-```javascript title="esm-module.mjs (ESM)"
+```javascript
 // 이름 지정 내보내기 (Named Exports)
 export const PI = 3.14;
 
@@ -114,7 +114,7 @@ const E = 2.71;
 export { E }; // 변수를 나중에 export 할 수도 있음
 ```
 
-```javascript title="main.mjs (ESM)"
+```javascript
 // 모듈 가져오기
 import greet, { PI, circleArea, E as Euler } from "./esm-module.mjs"; // 비동기적으로 로드 (내부 처리)
 
@@ -140,7 +140,7 @@ ESM 파일(`*.mjs` 또는 `package.json`에 `"type": "module"` 설정)에서 CJS
 - CJS 모듈의 `module.exports` 객체는 ESM의 **기본 내보내기(default export)**로 취급됩니다.
 - Node.js는 CJS 모듈의 `exports` 객체 속성들을 분석하여 **이름 지정 내보내기(named exports)**처럼 사용할 수 있도록 **정적 분석을 시뮬레이션**하기도 합니다. (하지만 항상 완벽하게 동작하는 것은 아니며, CJS 모듈의 구조에 따라 달라질 수 있습니다.)
 
-```javascript title="main.mjs (ESM)"
+```javascript
 // cjs-module.js (위에서 정의한 CJS 모듈) 가져오기
 
 // 1. Default Import 사용 (module.exports 전체를 가져옴)
@@ -170,7 +170,7 @@ console.log(cjsNamespace.PI); // Node.js가 named export로 인식해준 경우
 
 이 문제를 해결하기 위해 CJS 파일 내에서는 **동적 `import()` 함수**를 사용해야 합니다. 동적 `import()`는 Promise를 반환하며, 비동기적으로 ESM 모듈을 로드합니다.
 
-```javascript title="main.js (CJS)"
+```javascript
 // esm-module.mjs (위에서 정의한 ESM 모듈) 가져오기
 
 // const myEsmModule = require('./esm-module.mjs'); // Error: require() of ES Module not supported
