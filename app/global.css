@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 ::selection {
   background-color: #47a3f3;
@@ -148,3 +148,56 @@ table {
 .title {
   text-wrap: balance;
 }
+
+/* Code highlighting */
+
+/* Code block styling */
+pre {
+  @apply p-4 rounded-lg overflow-x-auto;
+  background-color: #0d1117;
+  color: #c9d1d9;
+}
+
+pre code {
+  @apply font-mono text-sm;
+  font-family: 'Fira Code', monospace;
+}
+
+/* Inline code styling */
+.inline-code {
+  @apply px-1.5 py-0.5 rounded-md text-sm font-mono;
+  background-color: rgb(175 184 193 / 0.2);
+  color: rgb(201 65 84);
+}
+
+@media (prefers-color-scheme: dark) {
+  .inline-code {
+    background-color: rgb(99 110 123 / 0.3);
+    color: rgb(255 123 133);
+  }
+}
+
+/* Line highlighting */
+.highlighted {
+  @apply bg-gray-800;
+}
+
+/* Word highlighting */
+.word {
+  @apply bg-gray-800 px-1 rounded;
+}
+
+/* Line numbers */
+.line-number {
+  @apply text-gray-500;
+}
+
+/* File name */
+.file-name {
+  @apply text-gray-400 text-sm mb-2;
+}
+
+/* Copy button */
+.copy-button {
+  @apply absolute top-2 right-2 p-2 rounded-md text-gray-400 hover:text-gray-200 hover:bg-gray-800 transition-colors;
+} 
