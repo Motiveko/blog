@@ -8,7 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -39,14 +39,15 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H ${{ vars.SERVER_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Deploy to server
+      - name: Copy build files and package files
         run: |
-          # Create necessary directories on server
           ssh -i ~/.ssh/deploy_key ${{ vars.SERVER_USERNAME }}@${{ vars.SERVER_HOST }} 'mkdir -p /home/motiveko/apps/blog'
-          
-          # Copy build files and package files
           scp -i ~/.ssh/deploy_key -r .next pnpm-lock.yaml package.json ${{ vars.SERVER_USERNAME }}@${{ vars.SERVER_HOST }}:/home/motiveko/apps/blog/
+
+      - name: Sync public directory (images, assets)
+        run: |
+          rsync -avz --delete -e "ssh -i ~/.ssh/deploy_key" ./public/ ${{ vars.SERVER_USERNAME }}@${{ vars.SERVER_HOST }}:/home/motiveko/apps/blog/public/
 
       - name: Install dependencies and reload on server
         run: |
-          ssh -i ~/.ssh/deploy_key ${{ vars.SERVER_USERNAME }}@${{ vars.SERVER_HOST }} 'cd /home/motiveko/apps/blog && pnpm install --frozen-lockfile && pm2 reload blog' 
+          ssh -i ~/.ssh/deploy_key ${{ vars.SERVER_USERNAME }}@${{ vars.SERVER_HOST }} 'cd /home/motiveko/apps/blog && pnpm install --frozen-lockfile && pm2 reload blog'
